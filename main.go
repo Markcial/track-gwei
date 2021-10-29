@@ -2,6 +2,7 @@ package main
 
 import (
 	"runtime"
+	"time"
 
 	"github.com/markcial/track-gwei/icon"
 	"github.com/progrium/macdriver/cocoa"
@@ -27,6 +28,17 @@ func main() {
 		itemQuit := cocoa.NSMenuItem_New()
 		itemQuit.SetTitle("Quit")
 		itemQuit.SetAction(objc.Sel("terminate:"))
+
+		ticker := time.NewTicker(10 * time.Second)
+
+		go func() {
+			for {
+				select {
+				case <-ticker.C:
+					obj.Button().SetTitle("Price: " + getGwei())
+				}
+			}
+		}()
 
 		menu := cocoa.NSMenu_New()
 		menu.AddItem(itemQuit)
